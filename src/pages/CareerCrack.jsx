@@ -169,23 +169,18 @@ function CareerCrack() {
 
       if (useGroq) {
         const res = await axios.post(
-          "https://api.groq.com/openai/v1/chat/completions",
+          "https://edgex-backend.onrender.com/groq",
           {
             model: "llama3-8b-8192",
             messages: [
               {
                 role: "system",
-                content: "You're CareerCrack, an AI mentor helping students pick careers. Always refer to their memory and speak like a friendly guide.",
+                content:
+                  "You're CareerCrack, an AI mentor helping students pick careers. Always refer to their memory and speak like a friendly guide.",
               },
               { role: "user", content: input },
             ],
             temperature: 0.7,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
-              "Content-Type": "application/json",
-            },
           }
         );
         aiReply = res.data.choices[0].message.content;
