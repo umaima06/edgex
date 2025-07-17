@@ -1,0 +1,102 @@
+[
+  {
+    "name": "National Means-Cum-Merit Scholarship (NMMS)",
+    "states": ["All"],
+    "grades": ["9", "10"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 350000,
+    "deadline": "2025-10-31",
+    "url": "https://scholarships.gov.in"
+  },
+  {
+    "name": "Inspire Scholarship (DST)",
+    "states": ["All"],
+    "grades": ["12", "College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 800000,
+    "deadline": "2025-11-30",
+    "url": "https://online-inspire.gov.in"
+  },
+  {
+    "name": "Kishore Vaigyanik Protsahan Yojana (KVPY)",
+    "states": ["All"],
+    "grades": ["11", "12", "College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 1000000,
+    "deadline": "2025-08-15",
+    "url": "https://kvpy.iisc.ac.in"
+  },
+  {
+    "name": "Maulana Azad National Fellowship (MANF)",
+    "states": ["All"],
+    "grades": ["College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "Minority",
+    "income_limit": 600000,
+    "deadline": "2025-09-15",
+    "url": "https://minorityaffairs.gov.in"
+  },
+  {
+    "name": "ONGC Scholarship for SC/ST",
+    "states": ["All"],
+    "grades": ["College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "SC",
+    "income_limit": 450000,
+    "deadline": "2025-12-01",
+    "url": "https://ongcindia.com"
+  },
+  {
+    "name": "Buddy4Study - Sardar Patel Scholarship",
+    "states": ["All"],
+    "grades": ["11", "12"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 600000,
+    "deadline": "2025-09-20",
+    "url": "https://www.buddy4study.com"
+  },
+  {
+    "name": "Ishan Uday (North Eastern Region)",
+    "states": ["Assam", "Meghalaya", "Manipur", "Tripura", "Nagaland", "Arunachal Pradesh", "Mizoram", "Sikkim"],
+    "grades": ["College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 450000,
+    "deadline": "2025-10-10",
+    "url": "https://scholarships.gov.in"
+  },
+  {
+    "name": "Prime Minister’s Scholarship Scheme (PMSS)",
+    "states": ["All"],
+    "grades": ["College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 600000,
+    "deadline": "2025-08-30",
+    "url": "https://ksb.gov.in"
+  },
+  {
+    "name": "NSP Post Matric Scholarship (SC Students)",
+    "states": ["All"],
+    "grades": ["11", "12", "College"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "SC",
+    "income_limit": 250000,
+    "deadline": "2025-10-15",
+    "url": "https://scholarships.gov.in"
+  },
+  {
+    "name": "NTSE (National Talent Search Exam)",
+    "states": ["All"],
+    "grades": ["10"],
+    "board": ["CBSE", "ICSE", "State Board"],
+    "category": "All",
+    "income_limit": 1000000,
+    "deadline": "2025-07-30",
+    "url": "https://ncert.nic.in"
+  }
+]
