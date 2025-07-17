@@ -4,7 +4,9 @@ import {
   serverTimestamp, onSnapshot, query, orderBy, updateDoc
 } from "firebase/firestore";
 import {
-  signInWithEmailAndPassword, onAuthStateChanged
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword, // ✅ Needed for Sign Up
 } from "firebase/auth";
 import { auth, db } from "../firebase";
 import ChatBubble from "../components/ChatBubble";
@@ -12,12 +14,11 @@ import { SendHorizonal, Sun, Moon, PlusCircle } from "lucide-react";
 import axios from "axios";
 import jsPDF from "jspdf";
 
-// 🧠 Memory extraction helper
+// 🧠 Extract name, fav subject, goal
 const extractMemory = (text) => {
   const name = text.match(/(?:I am|My name is)\s+(\w+)/i)?.[1];
   const fav = text.match(/(?:I like|enjoy|love)\s+(.+?)(?=[.,]|$)/i)?.[1];
   const goal = text.match(/(?:want to be(?:come)?|dream of being)\s+(.+?)(?=[.,]|$)/i)?.[1];
-
   return {
     name: name || "friend",
     favSubject: fav || "design",
@@ -25,28 +26,48 @@ const extractMemory = (text) => {
   };
 };
 
-// 🔐 Login Modal
+// 🔐 Login & Signup Modal
 const LoginModal = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSignup, setIsSignup] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
     try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
+      let res;
+      if (isSignup) {
+        res = await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        res = await signInWithEmailAndPassword(auth, email, password);
+      }
       onLogin(res.user.uid);
-    } catch {
-      setError("❌ Invalid email or password");
+    } catch (err) {
+      const code = err.code;
+      if (code === "auth/email-already-in-use") {
+        setError("⚠️ Email already registered. Try logging in.");
+      } else if (code === "auth/invalid-email") {
+        setError("⚠️ Invalid email format.");
+      } else if (code === "auth/weak-password") {
+        setError("⚠️ Password too weak (min 6 characters).");
+      } else if (code === "auth/user-not-found" || code === "auth/wrong-password") {
+        setError("❌ Wrong email or password.");
+      } else {
+        setError("❌ " + err.message);
+      }
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
-        <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white">🔐 Login to CareerCrack</h2>
+        <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white">
+          {isSignup ? "📝 Create Account" : "🔐 Login to Edgex"}
+        </h2>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-3">
+
+        <form onSubmit={handleAuth} className="space-y-3">
           <input
             type="email"
             className="w-full border px-3 py-2 rounded-lg"
@@ -62,9 +83,19 @@ const LoginModal = ({ onLogin }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
-            Login
+            {isSignup ? "Create Account" : "Login"}
           </button>
         </form>
+
+        <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+          {isSignup ? "Already have an account?" : "New here?"}{" "}
+          <button
+            onClick={() => setIsSignup(!isSignup)}
+            className="text-indigo-600 font-semibold hover:underline"
+          >
+            {isSignup ? "Login" : "Sign Up"}
+          </button>
+        </p>
       </div>
     </div>
   );
@@ -77,7 +108,7 @@ function CareerCrack() {
   const [history, setHistory] = useState([]);
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
-  const [useGroq, setUseGroq] = useState(true); // Toggle LLM source
+  const [useGroq, setUseGroq] = useState(true);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -198,31 +229,27 @@ function CareerCrack() {
   };
 
   const exportChatToPDF = () => {
-  const doc = new jsPDF();
-  let y = 10;
+    const doc = new jsPDF();
+    let y = 10;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-
-  messages.forEach(({ role, text }) => {
-    const label = role === "user" ? "🧍 You:" : "🤖 CareerCrack:";
-    const wrappedText = doc.splitTextToSize(`${label} ${text}`, 180); // Wrap to fit page width
-
-    wrappedText.forEach((line) => {
-      if (y > 280) {  // If page end reached
-        doc.addPage();
-        y = 10;
-      }
-      doc.text(line, 10, y);
-      y += 8;
+    messages.forEach(({ role, text }) => {
+      const label = role === "user" ? "🧍 You:" : "🤖 CareerCrack:";
+      const wrappedText = doc.splitTextToSize(`${label} ${text}`, 180);
+      wrappedText.forEach((line) => {
+        if (y > 280) {
+          doc.addPage();
+          y = 10;
+        }
+        doc.text(line, 10, y);
+        y += 8;
+      });
+      y += 4;
     });
 
-    y += 4; // Add spacing between messages
-  });
-
-  doc.save("CareerCrack_Chat.pdf");
-};
-
+    doc.save("CareerCrack_Chat.pdf");
+  };
 
   if (!userId) return <LoginModal onLogin={setUserId} />;
 
@@ -233,16 +260,11 @@ function CareerCrack() {
         <div className="w-64 bg-white/40 dark:bg-gray-800/60 backdrop-blur-lg border-r border-white/20 p-4 space-y-4">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-lg font-semibold">💬 Your Chats</h2>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-1 rounded hover:bg-white/20"
-              title="Toggle Dark Mode"
-            >
+            <button onClick={() => setDarkMode(!darkMode)} className="p-1 rounded hover:bg-white/20">
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
           </div>
 
-          {/* Mode Toggle */}
           <div className="flex items-center justify-between px-2 py-1 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg mb-3">
             <span className="text-xs font-semibold text-gray-800 dark:text-white">🧠 Mode:</span>
             <button
@@ -266,9 +288,8 @@ function CareerCrack() {
           {history.map((chat) => (
             <div
               key={chat.id}
-              className={`p-2 rounded-md cursor-pointer hover:bg-white/20 ${
-                selectedChatId === chat.id ? "bg-white/30" : ""
-              }`}
+              className={`p-2 rounded-md cursor-pointer hover:bg-white/20 ${selectedChatId === chat.id ? "bg-white/30" : ""
+                }`}
               onClick={() => loadChat(chat.id)}
             >
               <input
@@ -285,9 +306,10 @@ function CareerCrack() {
           ))}
         </div>
 
-        {/* Main */}
+        {/* Main Chat Area */}
         <div className="flex-1 p-6">
           <h1 className="text-3xl font-bold mb-4 text-center">🎓 CareerCrack</h1>
+
           <div className="h-96 overflow-y-auto space-y-4 p-4 bg-white/30 dark:bg-gray-800 rounded-2xl border border-white/20">
             {messages.map((msg, i) => (
               <ChatBubble key={i} role={msg.role} text={msg.text} />
@@ -308,15 +330,11 @@ function CareerCrack() {
           </div>
 
           <button
-  onClick={exportChatToPDF}
-  className="mt-6 flex items-center gap-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
->
-  📄 Export Chat
-  <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">
-    PDF
-  </span>
-</button>
-
+            onClick={exportChatToPDF}
+            className="mt-6 flex items-center gap-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
+          >
+            📄 Export Chat <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">PDF</span>
+          </button>
         </div>
       </div>
     </div>

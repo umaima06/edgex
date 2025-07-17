@@ -4,7 +4,9 @@ import {
   serverTimestamp, onSnapshot, query, orderBy, deleteDoc
 } from "firebase/firestore";
 import {
-  signInWithEmailAndPassword, onAuthStateChanged
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, db } from "../firebase";
 import ChatBubble from "../components/ChatBubble";
@@ -17,14 +19,33 @@ const LoginModal = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [mode, setMode] = useState("login");
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
-      onLogin(res.user.uid);
+      let userCredential;
+      if (mode === "signup") {
+        userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      }
+      onLogin(userCredential.user.uid);
     } catch (err) {
-      setError("❌ Invalid email or password");
+      const code = err.code;
+      if (code === 'auth/email-already-in-use') {
+        setError("⚠️ Email already registered. Try logging in.");
+      } else if (code === 'auth/invalid-email') {
+        setError("⚠️ Invalid email address.");
+      } else if (code === 'auth/weak-password') {
+        setError("⚠️ Password too weak. Use at least 6 characters.");
+      } else if (code === 'auth/user-not-found' || code === 'auth/wrong-password') {
+        setError("❌ Invalid email or password.");
+      } else {
+        setError("⚠️ Something went wrong. Try again.");
+      }
     }
   };
 
@@ -32,10 +53,10 @@ const LoginModal = ({ onLogin }) => {
     <div className="fixed inset-0 bg-black/40 backdrop-blur flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
         <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white">
-          🔐 Login to MoodMirror
+          {mode === "signup" ? "📝 Create Account" : "🔐 Login to MoodMirror"}
         </h2>
         {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="email"
             placeholder="Email"
@@ -56,9 +77,18 @@ const LoginModal = ({ onLogin }) => {
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
           >
-            Login
+            {mode === "signup" ? "Create Account" : "Login"}
           </button>
         </form>
+        <p className="text-center text-sm">
+          {mode === "signup" ? "Already have an account?" : "New here?"}{" "}
+          <button
+            onClick={() => setMode(mode === "signup" ? "login" : "signup")}
+            className="text-indigo-600 hover:underline"
+          >
+            {mode === "signup" ? "Login" : "Sign Up"}
+          </button>
+        </p>
       </div>
     </div>
   );
@@ -93,11 +123,11 @@ function MoodMirror() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
     const userMsg = { role: "user", text: input };
     const typing = { role: "ai", text: "__typing__" };
-    const newMessages = [...messages, userMsg, typing];
-
-    setMessages(newMessages);
+    const updated = [...messages, userMsg, typing];
+    setMessages(updated);
     setInput("");
 
     try {
@@ -123,10 +153,10 @@ function MoodMirror() {
         }
       );
 
-      const aiReply = res.data.choices[0].message.content;
-      const updatedChat = [...newMessages.slice(0, -1), { role: "ai", text: aiReply }];
-      setMessages(updatedChat);
-      await saveChat(updatedChat);
+      const reply = res.data.choices[0].message.content;
+      const finalChat = [...updated.slice(0, -1), { role: "ai", text: reply }];
+      setMessages(finalChat);
+      await saveChat(finalChat);
     } catch (err) {
       console.error("Groq error:", err);
       setMessages((prev) => [
@@ -138,6 +168,7 @@ function MoodMirror() {
 
   const saveChat = async (chatData) => {
     if (!userId) return;
+
     if (!selectedChatId) {
       const firstMsg = chatData.find((m) => m.role === "user")?.text || "Untitled";
       const docRef = await addDoc(collection(db, "moodmirror", userId, "history"), {
@@ -147,16 +178,9 @@ function MoodMirror() {
       });
       setSelectedChatId(docRef.id);
     } else {
-      const docRef = doc(db, "moodmirror", userId, "history", selectedChatId);
-      await updateDoc(docRef, {
-        messages: chatData,
-      });
+      const ref = doc(db, "moodmirror", userId, "history", selectedChatId);
+      await updateDoc(ref, { messages: chatData });
     }
-  };
-
-  const renameChat = async (id, title) => {
-    const ref = doc(db, "moodmirror", userId, "history", id);
-    await updateDoc(ref, { title });
   };
 
   const listenToHistory = (uid) => {
@@ -165,6 +189,11 @@ function MoodMirror() {
       const all = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setHistory(all);
     });
+  };
+
+  const renameChat = async (id, title) => {
+    const ref = doc(db, "moodmirror", userId, "history", id);
+    await updateDoc(ref, { title });
   };
 
   const loadChat = (id) => {
@@ -176,28 +205,35 @@ function MoodMirror() {
   };
 
   const deleteChat = async (id) => {
-  if (!userId) return;
-  const confirmDelete = window.confirm("Are you sure you want to delete this chat?");
-  if (!confirmDelete) return;
+    if (!userId) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this chat?");
+    if (!confirmDelete) return;
 
-  await deleteDoc(doc(db, "moodmirror", userId, "history", id));
-
-  // If you were viewing this chat, reset
-  if (selectedChatId === id) {
-    setSelectedChatId(null);
-    setMessages([]);
-  }
-};
-
+    await deleteDoc(doc(db, "moodmirror", userId, "history", id));
+    if (selectedChatId === id) {
+      setSelectedChatId(null);
+      setMessages([]);
+    }
+  };
 
   const exportChatToPDF = () => {
     const pdf = new jsPDF();
     let y = 10;
+
     messages.forEach(({ role, text }) => {
       const label = role === "user" ? "🧍 You:" : "🫀 MoodMirror:";
-      pdf.text(`${label} ${text}`, 10, y);
-      y += 10;
+      const wrapped = pdf.splitTextToSize(`${label} ${text}`, 180);
+      wrapped.forEach((line) => {
+        if (y > 280) {
+          pdf.addPage();
+          y = 10;
+        }
+        pdf.text(line, 10, y);
+        y += 8;
+      });
+      y += 4;
     });
+
     pdf.save("MoodMirror_Chat.pdf");
   };
 
@@ -210,21 +246,13 @@ function MoodMirror() {
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold">🫀 MoodMirror</h2>
           <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setMessages([]);
-                setSelectedChatId(null);
-              }}
-              title="New Chat"
-              className="text-indigo-600 dark:text-indigo-300 hover:text-indigo-800"
-            >
+            <button onClick={() => {
+              setMessages([]);
+              setSelectedChatId(null);
+            }} title="New Chat">
               <PlusCircle size={20} />
             </button>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              title="Toggle Dark Mode"
-              className="text-gray-700 dark:text-white"
-            >
+            <button onClick={() => setDarkMode(!darkMode)} title="Toggle Dark Mode">
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
@@ -233,9 +261,8 @@ function MoodMirror() {
         {history.map((chat) => (
           <div
             key={chat.id}
-            className={`p-2 rounded-md cursor-pointer hover:bg-white/20 ${
-              selectedChatId === chat.id ? "bg-white/30" : ""
-            }`}
+            className={`p-2 rounded-md cursor-pointer hover:bg-white/20 ${selectedChatId === chat.id ? "bg-white/30" : ""
+              }`}
             onClick={() => loadChat(chat.id)}
           >
             <input
@@ -278,19 +305,15 @@ function MoodMirror() {
         </div>
 
         <button
-  onClick={exportChatToPDF}
-  className="mt-6 flex items-center gap-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
->
-  📄 Export Chat
-  <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">
-    PDF
-  </span>
-</button>
-
+          onClick={exportChatToPDF}
+          className="mt-6 flex items-center gap-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-4 py-2 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
+        >
+          📄 Export Chat
+          <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">PDF</span>
+        </button>
       </div>
     </div>
   );
 }
 
 export default MoodMirror;
-
