@@ -120,7 +120,7 @@ We welcome developers, students, and AI enthusiasts!
 
 
 ## Contributors:-
-Name	Role	GitHub
+
 Ayushman Mukherjee	Project Admin	@ayush585 [](https://github.com/ayush585)
 
 
