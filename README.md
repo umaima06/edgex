@@ -63,7 +63,7 @@ Edgex offers:
 
 | Frontend        | Backend         | Database            | AI/LLM                           | Backend
 |-----------------|------------------|----------------------|--------------------------------|-------------
-| React + Tailwind | Express (Node.js) | Firebase Firestore + Auth | Groq LLM API (LLaMA 3) | Pyhton
+| React + Tailwind | Express (Node.js) | Firebase Firestore + Auth | Groq LLM API (LLaMA 3) | Node.js
 
 Also uses:
 - 🔁 Axios for API calls  
