@@ -121,8 +121,12 @@ We welcome developers, students, and AI enthusiasts!
 
 ## Contributors:-
 Name	Role	GitHub
-Ayushman Mukherjee	Project Admin	@ayush585
-Aishika 💫	Contributor	@aishikabiswas
+Ayushman Mukherjee	Project Admin	@ayush585 [](https://github.com/ayush585)
+
+
+Aishika 💫	Contributor	@aishikabiswas [](https://github.com/aishikabiswas)
+
+
 You?	Contributor	⭐ Star the repo & contribute!
 
 Want your name here? Submit a valid PR and we’ll add you 💖
