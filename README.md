@@ -1,6 +1,6 @@
 # 🧠 Edgex – Gen Z Mentorship Suite (GSSoC 2025 🌟)
 
-![Edgex Banner](https://your-banner-url.com) <!-- Optional: Add a banner -->  ![License](https://img.shields.io/github/license/ayush585/edgex)
+![Edgex Banner](https://postimg.cc/RqQ19gXX) <!-- Optional: Add a banner -->  ![License](https://img.shields.io/github/license/ayush585/edgex)
 
 **Edgex** is an open-source AI-powered mentorship platform built for **Gen Z** – helping students make **smarter emotional and career decisions** with the guidance of intelligent, empathetic, and memory-aware AI agents.
 
