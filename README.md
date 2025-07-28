@@ -121,10 +121,10 @@ We welcome developers, students, and AI enthusiasts!
 
 ## Contributors:-
 
-Ayushman Mukherjee	Project Admin	@ayush585 [](https://github.com/ayush585)
+Ayushman Mukherjee	Project Admin	@ayush585 [github](https://github.com/ayush585)
 
 
-Aishika 💫	Contributor	@aishikabiswas [](https://github.com/aishikabiswas)
+Aishika 💫	Contributor	@aishikabiswas [github](https://github.com/aishikabiswas)
 
 
 You?	Contributor	⭐ Star the repo & contribute!
@@ -145,7 +145,7 @@ This project is licensed under the MIT License.
 
 💬 Want to Collaborate?
 📧 Email: ayushmanmukherjee12@gmail.com
-🔗 LinkedIn: Ayushman Mukherjee [Live Demo](https://www.linkedin.com/in/ayushman-mukherjee-437a49314/)
+🔗 LinkedIn: Ayushman Mukherjee [Linkedin](https://www.linkedin.com/in/ayushman-mukherjee-437a49314/)
 💬 Discord: Sabucha | PA
 
 ⭐ Give Edgex a Star!
