@@ -6,6 +6,7 @@
 **Edgex** is an open-source AI-powered mentorship platform built for **Gen Z** – helping students make **smarter emotional and career decisions** with the guidance of intelligent, empathetic, and memory-aware AI agents.
 
 > 🚀 Project Admin: [@ayush585](https://github.com/ayush585) | 💥 Open Source under GSSoC 2025
+> Would recommend to join this discord server for 2x productivity! [Discord-server](https://discord.gg/rnfEbBPBgE)
 
 ---
 
