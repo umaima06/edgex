@@ -76,41 +76,27 @@ Also uses:
 ## 🚀 Local Setup
 
 ### 1. Clone the repo:
-
-```bash
 git clone https://github.com/ayush585/edgex.git
 cd edgex
-2. Install dependencies:
-bash
-Copy
-Edit
+
+Install dependencies:
 npm install
-3. Set up environment variables:
-For Frontend (.env file):
-ini
-Copy
-Edit
-VITE_GROQ_API_KEY=your_groq_key_here
-For Backend (if using proxy):
-ini
-Copy
-Edit
+
+Set up environment variables:
+For Backend (groq-proxy.js or backend folder):
 GROQ_API_KEY=your_groq_key_here
-4. Start development servers:
+
+Start development servers:
 Frontend:
-bash
-Copy
-Edit
 npm run dev
-Backend (optional):
-bash
-Copy
-Edit
-node groq-proxy.js
+
+Backend:
+......
+
 🤝 Contributing to Edgex (GSSoC 2025)
 We welcome developers, students, and AI enthusiasts!
 
-🗺️ Good First Issues: More interesting issues coming soon! 
+🗺️ Good First Issues – More exciting ones coming soon:
 ✅ UI enhancements
 
 🧠 AI prompt tuning
@@ -118,26 +104,28 @@ We welcome developers, students, and AI enthusiasts!
 🐛 Bug fixing
 
 💡 Feature ideas
-and also try to find some solutions for vercel deployment! 
 
-📄 Contribution Guidelines:
-Fork & clone the repo
+🛠️ Vercel deployment troubleshooting (currently under deployment!)
 
-Create a new branch: feature/my-feature
+📄 Contribution Guidelines
+🍴 Fork & clone the repo
 
-Push and open a PR with a clear title & description
+🔀 Create a new branch: feature/my-feature
 
-Follow code style, comment your logic
+⬆️ Push and open a PR with a clear title & meaningful description
 
-Respect and help fellow contributors
+💬 Comment your logic clearly
 
-👨‍👩‍👧‍👦 Contributors
+🤝 Be kind & helpful to fellow contributors
+
+
+## Contributors:-
 Name	Role	GitHub
-Ayushman Mukherjee	Project Admin	@ayush585 https://github.com/ayush585
-Aishika 💫	Contributor	@aishikabiswas https://github.com/aishikabiswas
+Ayushman Mukherjee	Project Admin	@ayush585
+Aishika 💫	Contributor	@aishikabiswas
 You?	Contributor	⭐ Star the repo & contribute!
 
-Want your name here? Start contributing today! Submit a valid PR and we’ll add you 💖
+Want your name here? Submit a valid PR and we’ll add you 💖
 
 🧑‍💻 Mentorship Tools Built for Gen Z
 Edgex isn’t just a project — it’s a movement to give every student:
@@ -152,17 +140,10 @@ Edgex isn’t just a project — it’s a movement to give every student:
 This project is licensed under the MIT License.
 
 💬 Want to Collaborate?
-📧 Email: ayushmanmukherjee.ai@gmail.com
-🔗 LinkedIn: [https://www.linkedin.com/in/ayushman-mukherjee-437a49314/]
-📣 Discord: Sabucha | PA
+📧 Email: ayushmanmukherjee12@gmail.com
+🔗 LinkedIn: Ayushman Mukherjee [Live Demo](https://www.linkedin.com/in/ayushman-mukherjee-437a49314/)
+💬 Discord: Sabucha | PA
 
 ⭐ Give Edgex a Star!
-If you love what we're building, star the repo and share with friends!
+If you love what we're building, star the repo and share it with your dev friends!
 Let’s make AI mentorship the new normal for Gen Z 💥
-
-bash
-Copy
-Edit
-git commit -m "🚀 Made life easier for Gen Z with Edgex"
-
-
