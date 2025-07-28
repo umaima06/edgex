@@ -121,7 +121,7 @@ We welcome developers, students, and AI enthusiasts!
 
 ## Contributors:-
 
-Ayushman Mukherjee	Project Admin	@ayush585 [github](https://github.com/ayush585)
+Ayushman Mukherjee	Project Admin	@ayush585 [github](https://github.com/ayush585) ![Badge](https://img.shields.io/badge/Project%20Admin-💥%20GSSoC%202025%20Visionary%20Admin-blueviolet)
 
 
 Aishika 💫	Contributor	@aishikabiswas [github](https://github.com/aishikabiswas)
