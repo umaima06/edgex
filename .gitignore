@@ -1,4 +1,6 @@
 node_modules/
+.vite/
 .next/
-build/
 .vercel/
+build/
+
