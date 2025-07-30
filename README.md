@@ -22,27 +22,27 @@ Both are actively maintained and open for contributions.
 ## 📦 Live Projects in Edgex
 
 ### Landing page -
-🔗 [Live Demo](https://edgex.netlify.app/)
+🔗 [Live Demo](https://edgex-brown.vercel.app/)
 
 ### 🫀 MoodMirror — AI for Emotional Clarity  
 > Analyze chats & relationships. Detect friendzone, rizz, manipulation, or overthinking – with real advice.  
-🔗 [Live Demo](https://edgex.netlify.app/moodmirror) | 🤖 Powered by Groq LLMs
+🔗 [Live Demo](https://edgex-brown.vercel.app/moodmirror) | 🤖 Powered by Groq LLMs
 
 ### 🎓 CareerCrack — Memory-Powered Career Mentor  
 > Personal guidance based on user’s name, dreams, and passions. Helps teens discover their true calling.  
-🔗 [Live Demo](https://edgex.netlify.app/careercrack)
+🔗 [Live Demo](https://edgex-brown.vercel.app/careercrack)
 
 ### 🎓 Scholarship Scout -
 > Personal guidance based on details of the student for scholarship!
-🔗 [Live Demo](https://edgex.netlify.app/scholarships)
+🔗 [Live Demo](https://edgex-brown.vercel.app/scholarships)
 
 ### 🎓 Smart Notes - 
 > coming soon
-🔗 [Live Demo](https://edgex.netlify.app/smartnotes)
+🔗 [Live Demo](https://edgex-brown.vercel.app/smartnotes)
 
 ### Voice feedback - 
 > coming soon!
-🔗 [Live Demo](https://edgex.netlify.app/voicefeedback)
+🔗 [Live Demo](https://edgex-brown.vercel.app/voicefeedback)
 
 ---
 
