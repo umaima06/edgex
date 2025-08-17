@@ -158,14 +158,14 @@ function Home() {
           <p className="text-lg text-gray-300 mb-8">
             Your all-in-one AI toolkit: career mentor, mood companion, scholarship tracker & more.
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center items-center  gap-4">
             <Link
               to="/careercrack"
               className="bg-purple-600 hover:bg-purple-700 transition px-6 py-3 rounded-lg text-white font-semibold flex items-center gap-2"
             >
               Start Exploring <ArrowRight size={18} />
             </Link>
-            <a href="#features" className="text-gray-400 hover:text-white underline">
+            <a href="#features" className="text-gray-400 hover:text-white underline flex items-center h-full px-6 py-3 rounded-lg font-semibold">
               Learn More
             </a>
           </div>
@@ -185,13 +185,13 @@ function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-glass backdrop-blur-md p-6 rounded-xl border border-white/10 hover:shadow-xl transition cursor-pointer"
+                className="bg-glass backdrop-blur-md p-6 rounded-xl border border-white/10 transition cursor-pointer flex flex-col justify-between h-full hover:shadow-2xl hover:border-white/20 hover:bg-white/5"
               >
                 <div className="flex items-center gap-3 mb-3">
                   {feat.icon}
                   <h3 className="text-xl font-semibold">{feat.title}</h3>
                 </div>
-                <p className="text-gray-400">{feat.desc}</p>
+                <p className="text-gray-400 flex-grow">{feat.desc}</p>
               </motion.div>
             );
             return feat.link ? (
