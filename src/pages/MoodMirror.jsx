@@ -10,9 +10,12 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../firebase";
 import ChatBubble from "../components/ChatBubble";
-import { SendHorizonal, PlusCircle, Moon, Sun } from "lucide-react";
+import { PlusCircle, Moon, Sun } from "lucide-react"; // removed SendHorizonal (handled by ChatInput now)
 import axios from "axios";
 import jsPDF from "jspdf";
+
+// ✅ Import ChatInput component
+import ChatInput from "../components/chat/ChatInput";
 
 // 🔐 Login Modal
 const LoginModal = ({ onLogin }) => {
@@ -96,7 +99,6 @@ const LoginModal = ({ onLogin }) => {
 
 function MoodMirror() {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
   const [userId, setUserId] = useState(null);
   const [history, setHistory] = useState([]);
   const [selectedChatId, setSelectedChatId] = useState(null);
@@ -121,14 +123,13 @@ function MoodMirror() {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const handleSend = async (text) => {
+    if (!text.trim()) return;
 
-    const userMsg = { role: "user", text: input };
+    const userMsg = { role: "user", text };
     const typing = { role: "ai", text: "__typing__" };
     const updated = [...messages, userMsg, typing];
     setMessages(updated);
-    setInput("");
 
     try {
       const res = await axios.post(
@@ -141,12 +142,11 @@ function MoodMirror() {
               content:
                 "You are MoodMirror by Mindmorph, a friendly Gen Z AI big sibling who reads chats and gives brutally honest but warm analysis of relationships: flirt, rizz, friendzone, manipulation, or overthinking. End with real advice.",
             },
-            { role: "user", content: input },
+            { role: "user", content: text },
           ],
           temperature: 0.75,
         }
       );
-
 
       const reply = res.data.choices[0].message.content;
       const finalChat = [...updated.slice(0, -1), { role: "ai", text: reply }];
@@ -298,20 +298,9 @@ function MoodMirror() {
       <div ref={messagesEndRef} />
     </div>
 
-    {/* Input */}
-    <div className="mt-4 flex items-center bg-white/70 dark:bg-white/10 border border-gray-300 dark:border-gray-600 rounded-xl px-3 shadow-md">
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Paste convo or type what happened..."
-        className="flex-1 bg-transparent outline-none py-3 px-2 text-gray-800 dark:text-white placeholder:text-gray-500"
-      />
-      <button
-        onClick={handleSend}
-        className="hover:text-indigo-600 dark:hover:text-purple-300 transition"
-      >
-        <SendHorizonal className="w-5 h-5" />
-      </button>
+    {/* ✅ Replaced old input with ChatInput */}
+    <div className="mt-4">
+      <ChatInput onSend={handleSend} />
     </div>
 
     {/* Export Button */}

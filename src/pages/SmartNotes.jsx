@@ -1,19 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+
+// The new ChatInput component with "Enter to Send" logic
+function ChatInput({ onSend, disabled }) {
+  const [value, setValue] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
+  const textareaRef = useRef(null);
+
+  const handleSend = () => {
+    const text = value.trim();
+    if (!text || disabled) return;
+    onSend?.(text);
+    setValue("");
+  };
+
+  const handleKeyDown = (e) => {
+    // Block send if composing with an IME; allow Shift+Enter to newline
+    const isEnter = e.key === "Enter" || e.code === "Enter";
+    if (isEnter && !e.shiftKey && !isComposing) {
+      e.preventDefault(); // stop newline
+      handleSend();
+    }
+  };
+  
+  // Auto-resize textarea height based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      const scrollHeight = textarea.scrollHeight;
+      // Set a max height (e.g., 200px) to prevent it from growing indefinitely
+      textarea.style.height = `${Math.min(scrollHeight, 150)}px`;
+    }
+  }, [value]);
+
+
+  return (
+    <div className="p-4 bg-[#0e0e1a] flex items-end gap-2 border-t border-white/10">
+      <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={() => setIsComposing(false)}
+        placeholder="Paste your class notes or questions..."
+        className="flex-1 p-3 bg-[#12121c] rounded-lg resize-none text-white border border-white/10 outline-none"
+        rows={1}
+        disabled={disabled}
+      />
+      <button
+        onClick={handleSend}
+        disabled={disabled || !value.trim()}
+        className="bg-purple-600 hover:bg-purple-700 p-3 rounded-lg text-white flex items-center justify-center h-12 w-12 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ArrowRight />
+      </button>
+    </div>
+  );
+}
+
 
 function SmartNotes() {
   const [messages, setMessages] = useState([
     { from: "bot", text: "Hi! Paste your class notes and I’ll summarize and tag them for you." },
   ]);
-  const [input, setInput] = useState("");
+  const [isAiTyping, setIsAiTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    const userMessage = { from: "user", text: input };
+
+  const handleSend = async (text) => {
+    if (!text.trim()) return;
+    setIsAiTyping(true);
+
+    const userMessage = { from: "user", text: text };
     setMessages((prev) => [...prev, userMessage]);
-    setInput("");
 
     // Fake loading response
     setMessages((prev) => [...prev, { from: "bot", text: "Thinking..." }]);
@@ -21,7 +87,7 @@ function SmartNotes() {
     setTimeout(() => {
       const botResponse = {
         from: "bot",
-        text: `✅ Summary:\n- ${input
+        text: `✅ Summary:\n- ${text
           .split(".")
           .slice(0, 3)
           .map((s) => s.trim())
@@ -30,14 +96,8 @@ function SmartNotes() {
       };
 
       setMessages((prev) => [...prev.slice(0, -1), botResponse]);
+      setIsAiTyping(false);
     }, 1000);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
   };
 
   return (
@@ -63,24 +123,10 @@ function SmartNotes() {
             ))}
           </motion.div>
         ))}
+         <div ref={messagesEndRef} />
       </div>
 
-      <div className="p-4 bg-[#0e0e1a] flex gap-2 border-t border-white/10">
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Paste your class notes or questions..."
-          className="flex-1 p-3 bg-[#12121c] rounded-lg resize-none text-white border border-white/10 outline-none"
-          rows={2}
-        />
-        <button
-          onClick={handleSend}
-          className="bg-purple-600 hover:bg-purple-700 p-3 rounded-lg text-white flex items-center gap-2"
-        >
-          <ArrowRight />
-        </button>
-      </div>
+      <ChatInput onSend={handleSend} disabled={isAiTyping} />
     </div>
   );
 }
