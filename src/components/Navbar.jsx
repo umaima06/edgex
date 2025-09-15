@@ -88,7 +88,15 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
   };
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((prev) => {
+     const newState = !prev;
+     if (newState) {
+       document.body.classList.add("no-scroll");
+    } else {
+        document.body.classList.remove("no-scroll");
+    }
+    return newState;
+   });
   };
   
   const toggleProfileMenu = () => {
@@ -217,8 +225,8 @@ const Navbar = ({ isAuthenticated, onLogout, user }) => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`lg:hidden transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-          <div className="px-4 pt-2 pb-4 space-y-1 bg-purple-900/95 backdrop-blur-sm border-t border-purple-700/30">
+        <div className={`lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div className="px-4 pt-2 pb-4 space-y-1 bg-purple-900/95 backdrop-blur-sm border-t border-purple-700/30 overflow-y-auto max-h-[calc(100vh-4rem)]">
             {navigationItems.map((item) => {
               const IconComponent = item.icon;
               const isActive = currentPage === item.id;
