@@ -1,3 +1,6 @@
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider, db } from "../firebase";
+// import { doc, getDoc, setDoc } from "firebase/firestore";
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,8 +9,8 @@ import {
   updatePassword,
   sendPasswordResetEmail,
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+// import { auth, db } from '../firebase';
 import {
   User,
   Mail,
@@ -180,6 +183,45 @@ const LoginModal = ({ onClose }) => {
       setIsLoading(false);
     }
   };
+
+  const handleGoogleLogin = async () => {
+  setIsLoading(true);
+  setError('');
+  setSuccess('');
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // Firestore reference
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (!docSnap.exists()) {
+      // Save new user
+      await setDoc(userRef, {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        provider: "google",
+        createdAt: new Date(),
+      });
+      console.log("New user saved in Firestore ✅");
+    } else {
+      console.log("User already exists, skipping save ✅");
+    }
+
+    // Navigate to home/dashboard
+    navigate('/');
+
+  } catch (err) {
+    console.error("Google Sign-In Error:", err.message);
+    setError('❌ ' + err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const resetForm = () => {
     setFormData({
@@ -360,6 +402,21 @@ const LoginModal = ({ onClose }) => {
               </>
             )}
           </form>
+          {/* Google Sign-In */}
+          <div className="text-center mt-4">
+            <p className="text-gray-400 text-sm mb-2">Or continue with</p>
+            <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 transform hover:scale-[1.02]"
+            >
+              <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" className="w-5 h-5"
+              />
+             Continue with Google
+            </button>
+          </div>
+
           <div className="text-center pt-6 border-t border-gray-700/50 space-y-3">
             {showForgotPassword ? (
               <button
