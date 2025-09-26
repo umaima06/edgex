@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
+import { signOut } from "firebase/auth";
 import { auth } from './firebase';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -97,6 +98,15 @@ function App() {
       </div>
     </Router>
   );
+
+  const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    setUser(null);
+  } catch (err) {
+    console.error("Logout error:", err.message);
+  }
+};
 }
 
 export default App;
