@@ -130,16 +130,16 @@ Why it's a good match.
   const current = steps[step];
 
   return (
-    <div className="min-h-screen p-6 font-poppins text-gray-900 bg-yellow-50 dark:bg-gray-900 dark:text-gray-100">
-  <div className="max-w-2xl mx-auto bg-white/50 backdrop-blur-xl p-8 rounded-3xl border border-orange-200 shadow-2xl">
-    <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-700 via-orange-500 to-red-500 bg-clip-text text-transparent mb-6 drop-shadow-md">
+    <div className="min-h-screen p-6 font-poppins text-gray-900 bg-purple-50 dark:bg-gray-900 dark:text-gray-100">
+  <div className="max-w-2xl mx-auto bg-white/50 backdrop-blur-xl p-8 rounded-3xl border border-purple-200 shadow-2xl">
+    <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-purple-700 via-purple-500 to-indigo-500 bg-clip-text text-transparent mb-6 drop-shadow-md">
       🎓 ScholarshipScout
     </h1>
 
     {/* Form Stepper */}
     {matches.length === 0 && (
           <div className="space-y-4 animate-fade-in">
-        <label className="block text-lg font-semibold text-orange-800">{current.label}</label>
+        <label className="block text-lg font-semibold text-purple-800">{current.label}</label>
         {current.type === "select" ? (
           <select
             value={profile[current.key]}
@@ -166,7 +166,7 @@ Why it's a good match.
         <button
           onClick={handleNext}
           disabled={!profile[current.key] || loading}
-          className="mt-4 w-full bg-gradient-to-r from-yellow-600 via-orange-500 to-red-400 hover:scale-105 text-white py-3 rounded-full font-semibold flex justify-center items-center gap-2 shadow-md transition-all duration-300 disabled:opacity-50"
+          className="mt-4 w-full bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-400 hover:scale-105 text-white py-3 rounded-full font-semibold flex justify-center items-center gap-2 shadow-md transition-all duration-300 disabled:opacity-50"
         >
           {step < steps.length - 1
             ? "Next"
@@ -181,13 +181,13 @@ Why it's a good match.
     {/* AI Results */}
     {matches.length > 0 && (
       <div ref={aiRef} className="mt-8 space-y-4 animate-fade-in">
-        <h2 className="text-xl font-semibold text-orange-800 mb-3">
+        <h2 className="text-xl font-semibold text-purple-800 mb-3">
           ✅ Top Matches for You:
         </h2>
         {matches.map((m, i) => (
           <div
             key={i}
-            className="p-4 bg-yellow-100/80 dark:bg-gray-800/70 rounded-2xl border border-orange-200 dark:border-gray-700 backdrop-blur-md shadow-inner hover:scale-[1.02] transition-transform duration-300"
+            className="p-4 bg-purple-100/80 dark:bg-gray-800/70 rounded-2xl border border-purple-200 dark:border-gray-700 backdrop-blur-md shadow-inner hover:scale-[1.02] transition-transform duration-300"
           >
             <ReactMarkdown
               components={{
@@ -195,11 +195,11 @@ Why it's a good match.
                   <p className="whitespace-pre-wrap text-gray-800 dark:text-gray-100" {...props} />
                 ),
                 strong: ({ node, ...props }) => (
-                  <strong className="text-orange-700 dark:text-orange-300 font-bold" {...props} />
+                  <strong className="text-purple-700 dark:text-purple-300 font-bold" {...props} />
                 ),
                 a: ({ node, ...props }) => (
                   <a
-                    className="text-red-600 dark:text-red-400 underline hover:text-red-800 dark:hover:text-red-200 font-medium"
+                    className="text-indigo-600 dark:text-indigo-400 underline hover:text-red-800 dark:hover:text-red-200 font-medium"
                     target="_blank"
                     rel="noopener noreferrer"
                     {...props}
